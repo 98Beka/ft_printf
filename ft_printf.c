@@ -6,72 +6,104 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 14:23:39 by ehande            #+#    #+#             */
-/*   Updated: 2020/12/22 14:23:50 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/05 09:25:08 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int distrib(int ch_num, va_list *pa, t_st *st, int *i)
+void		flginit(t_st *st)
 {
-    if(st->arg[*i] == 'd' || st->arg[*i] == 'i')
-        ch_num += set_int(0, va_arg(*pa, int), st);
-    if(st->arg[*i] == 'c')
-        ch_num += set_char(0, va_arg(*pa, int), st);
-    return(ch_num);
+	st->flags = F_NONE;
+	st->str = NULL;
+	st->dig = 0;
+	st->width = 0;
+	st->acrcy = -1;
 }
-int pars(int ch_num, int i, va_list *pa, t_st *st)
+
+void		distrib(int *ch_num, va_list *pa, t_st *st)
 {
-    if(st->arg[i] == '%' && st->arg[i + 1])
-       while(st->arg[i++])
-       {   
-        if (st->arg[i] == '0' && !(st->flags & F_MN) )
-			st->flags = st->flags | F_ZR; 
-        if (st->arg[i] == '-')
-			st->flags = (st->flags | F_MN) & ~F_ZR; 
-       if (st->arg[i] == '*')
-			get_width(pa, st);
-		if (st->arg[i] == '.')
-			get_accuracy(pa, st, &i);
-        if (ft_isdigit(st->arg[i]))
-            get_digit(st, st->arg[i]);
-		if (specif_type(st->arg[i]))
+	if (*st->arg == 'd' || *st->arg == 'i')
+		*ch_num += set_int(0, va_arg(*pa, int), st);
+	if (*st->arg == 'c')
+		*ch_num += set_char(0, va_arg(*pa, int), st);
+	if (*st->arg == 's')
+		*ch_num += set_str(0, va_arg(*pa, char *), st);
+	if (*st->arg == 'u')
+		*ch_num += set_uint(0, va_arg(*pa, unsigned int), st);
+	if (*st->arg == 'p')
+		*ch_num += set_p(0, va_arg(*pa, unsigned long long), st);
+	if (*st->arg == 'x')
+		*ch_num += set_x(0, va_arg(*pa, unsigned long long), st, 0);
+	if (*st->arg == 'X')
+		*ch_num += set_x(0, va_arg(*pa, unsigned long long), st, 1);
+	if (*st->arg == '%')
+		*ch_num += set_char(0, '%', st);
+}
+
+int			parsfl(va_list *pa, t_st *st)
+{
+	if (*st->arg == '0' && !(st->flags & F_MN))
+		st->flags = st->flags | F_ZR;
+	if (ft_isdigit(*st->arg))
+		get_digit(st);
+	if (*st->arg == '-')
+		st->flags = (st->flags & ~F_ZR) | F_MN;
+	if (*st->arg == '*')
+		get_width(pa, st);
+	if (*st->arg == '.')
+		if (!get_accuracy(pa, st))
+			return (0);
+	return (1);
+}
+
+int			pars(int *ch_num, va_list *pa, t_st *st)
+{
+	if (!parsfl(pa, st))
+		return (0);
+	if (specif_type(*st->arg))
+	{
+		distrib(ch_num, pa, st);
+		str_next(&st->arg);
+		return (1);
+	}
+	if (!str_next(&st->arg))
+		return (0);
+	if (!specif_type(*st->arg))
+	{
+		if (!pars(ch_num, pa, st))
+			return (0);
+	}
+	else if (specif_type(*st->arg))
+	{
+		distrib(ch_num, pa, st);
+		str_next(&st->arg);
+		return (1);
+	}
+	return (1);
+}
+
+int			ft_printf(const char *str, ...)
+{
+	va_list	pa;
+	t_st	st;
+	int		ch_num;
+	char	*tmp;
+
+	ch_num = 0;
+	st.arg = ft_strdup(str);
+	tmp = st.arg;
+	va_start(pa, str);
+	while (wrstr(&st, &ch_num))
+	{
+		flginit(&st);
+		if (!pars(&ch_num, &pa, &st))
 		{
-            st->spcr = st->arg[i];
-            ch_num += distrib(0, pa, st, &i);	
+			zr_or_sp(&ch_num, st.width, 0, st.flags & F_ZR);
+			break ;
 		}
-        else if (st->arg[i] && !is_flag(st->arg[i]))
-        ch_num +=putch(st->arg[i]);
-       }
-    return(ch_num);
+	}
+	free(tmp);
+	va_end(pa);
+	return (ch_num);
 }
-
-int     ft_printf(const char *str, ...)
-{
-    va_list pa;
-    t_st st;
-    int ch_num;
-
-    ch_num = 0;
-    st.flags = F_NONE;
-    st.str = NULL;
-    st.dig = 0; 
-    st.width = 0;
-    st.accuracy = 0;
-    st.arg = ft_strdup(str);
-    va_start(pa, str);
-    while(*st.arg != '%' && *st.arg)
-       ch_num += putchar_next(&st.arg);
-    ch_num += pars(0, 0, &pa, &st);
-    va_end(pa);
-    return(ch_num);
-}
-
-#include <stdio.h>
-int main()
-{
-    ft_printf("%.*d",9,3);
-    printf("\n%.*f",-90,3.5599);
-    return (0);
-}
-

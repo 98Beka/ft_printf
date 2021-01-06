@@ -13,12 +13,16 @@
 LIBFT = libft.a
 NAME = libftprintf.a
 SRCS =  \
-		ft_printf.c \
-		putchar_next.c \
+		ft_printf.c\
 		get_flags.c\
 		set_int.c\
 		set_char.c\
 		set_str.c\
+		set_uint.c\
+		dop.c\
+		set_x.c\
+		set_p.c\
+		
 		
 
 
@@ -35,10 +39,10 @@ all : $(NAME)
 
 
 a:
-	$(CC) -g $(FLAGS) $(SRCS) $(LIBFT) -o a
+	$(CC) -g  $(SRCS) $(LIBFT) -o a
 
 q:
-	$(CC) -g $(SRCS) main2.c $(LIBFT) -o q
+	$(CC) -g $(SRCS) $(FLAGS) main2.c $(LIBFT) -o q
 
 
 

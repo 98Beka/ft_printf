@@ -6,52 +6,34 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 11:09:13 by ehande            #+#    #+#             */
-/*   Updated: 2020/12/28 11:09:15 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/05 08:41:02 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void		zr_or_sp(int *ch_num, int width, int str_len, char spzr)
+int		print_str(size_t i, size_t j, char *str)
 {
-    while (width - str_len > 0)
-	 {
-		write(1, &spzr, 1);
-		width -= 1;
-		*ch_num += 1;
-	 }
+	while (i < j)
+		write(1, &str[i++], 1);
+	return (i);
 }
 
-static void		wr(int i, int *ch_num, char *str, t_st *st)
+int		set_str(int ch_num, char *str, t_st *st)
 {
-    int len;
+	size_t len;
 
-    len = ft_strlen(str);
-	if (st->accuracy >= 0)
-	{
-		zr_or_sp(ch_num, st->accuracy, ft_strlen(str), 0);
-        while( i++ < st->accuracy)
-            write(1, &str[i], 1);
-	}
-	else
-            while( i++ < len)
-            write(1, &str[i], 1);
-
-}
-
-int			set_str(int ch_num, char *str, t_st *st)
-{
 	if (!str)
-		str = "(null)";
-	if (st->accuracy >= 0 && (size_t)st->accuracy > ft_strlen(str))
-		st->accuracy = ft_strlen(str);
+		str = NN;
+	len = ft_strlen(str);
+	if ((size_t)st->acrcy > len || st->acrcy < 0)
+		st->acrcy = len;
 	if (st->flags & F_MN)
-		wr(-1, &ch_num, str, st);
-	if (st->accuracy >= 0)
-		zr_or_sp(&ch_num, st->width, st->accuracy, 0);
-	else
-		zr_or_sp(&ch_num, st->width, ft_strlen(str), 0);
+		ch_num += print_str(0, st->acrcy, str);
+	zr_or_sp(&ch_num, st->width, st->acrcy, st->flags & F_ZR);
+	if (st->flags & F_AC)
+		zr_or_sp(&ch_num, st->acrcy, len, 1);
 	if (!(st->flags & F_MN))
-		wr(-1, &ch_num, str, st);
+		ch_num += print_str(0, st->acrcy, str);
 	return (ch_num);
 }

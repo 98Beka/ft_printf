@@ -6,48 +6,58 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 18:07:02 by ehande            #+#    #+#             */
-/*   Updated: 2020/12/28 11:07:36 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/05 09:13:31 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void get_accuracy(va_list *pa, t_st *st, int *i)
+int		get_accuracy(va_list *pa, t_st *st)
 {
-	*i +=1;
-	if(ft_isdigit(st->arg[*i]))
+	st->flags = st->flags | F_AC;
+	st->arg += 1;
+	if (*st->arg == 'p' || (*st->arg == '0' && *(st->arg + 1) == 'p'))
 	{
-		st->accuracy = 0;
-		while(ft_isdigit(st->arg[*i]))
-		{
-			st->accuracy = (st->accuracy * 10) + (st->arg[*i] - '0');
-			*i+= 1;
-		}
+		if (*st->arg == '0' && *(st->arg + 1) == 'p')
+			st->arg += 1;
+		st->flags = st->flags | F_ER;
+		return (1);
 	}
-	else if(st->arg[*i] == '*')
+	else if (ft_isdigit(*st->arg))
 	{
-		st->accuracy = va_arg(*pa, int);
-		*i+= 1;
+		st->acrcy = 0;
+		while (ft_isdigit(*st->arg))
+			st->acrcy = (st->acrcy * 10) + (*(st->arg++) - '0');
 	}
+	else if (*st->arg == '*')
+	{
+		st->acrcy = va_arg(*pa, int);
+		if (st->acrcy < -1 && *(st->arg + 1) != 's')
+			st->acrcy = 0;
+		st->arg++;
+	}
+	return (st->acrcy != -1);
 }
 
-void get_width(va_list *pa, t_st *st)
+void	get_width(va_list *pa, t_st *st)
 {
-	
 	st->width = va_arg(*pa, int);
-		if (st->width < 0)
+	if (st->width < 0)
 	{
 		st->flags = st->flags | F_MN;
+		st->flags = (st->flags & ~F_ZR) | F_MN;
 		st->width *= -1;
 	}
 	st->flags = st->flags | F_ST;
 }
 
-void get_digit(t_st *st, char ch)
+void	get_digit(t_st *st)
 {
-		if (st->flags & F_ST)
-		    st->width = 0;
-	st->width = (st->width * 10) + (ch - '0');
+	while (ft_isdigit(*st->arg))
+	{
+		st->width = (st->width * 10) + (*st->arg - '0');
+		str_next(&st->arg);
+	}
 }
 
 int		specif_type(int c)
