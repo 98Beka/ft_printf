@@ -16,14 +16,8 @@ int		get_accuracy(va_list *pa, t_st *st)
 {
 	st->flags = st->flags | F_AC;
 	st->arg += 1;
-	if (*st->arg == 'p' || (*st->arg == '0' && *(st->arg + 1) == 'p'))
-	{
-		if (*st->arg == '0' && *(st->arg + 1) == 'p')
-			st->arg += 1;
-		st->flags = st->flags | F_ER;
-		return (1);
-	}
-	else if (ft_isdigit(*st->arg))
+
+	if (ft_isdigit(*st->arg))
 	{
 		st->acrcy = 0;
 		while (ft_isdigit(*st->arg))
@@ -32,11 +26,11 @@ int		get_accuracy(va_list *pa, t_st *st)
 	else if (*st->arg == '*')
 	{
 		st->acrcy = va_arg(*pa, int);
-		if (st->acrcy < -1 && *(st->arg + 1) != 's')
-			st->acrcy = 0;
 		st->arg++;
 	}
-	return (st->acrcy != -1);
+	if(st->acrcy >= 0)
+		st->flags = st->flags & ~F_ZR;
+	return (st->acrcy != 0 || *st->arg + 1 != 'p');
 }
 
 void	get_width(va_list *pa, t_st *st)

@@ -27,16 +27,15 @@ void		zr_or_sp(int *ch_num, int width, int str_len, int spzr)
 
 void		wr(size_t i, int *ch_num, t_st *st)
 {
-	if (st->dig < 0 && st->acrcy >= 0)
-		write(1, "-", 1);
+	if(*st->str == '-')
+		mn(ch_num, st);
 	if (st->flags & F_AC)
-		zr_or_sp(ch_num, st->acrcy - 1, ft_strlen(st->str) - 1, 1);
+		zr_or_sp(ch_num, st->acrcy, ft_strlen(st->str), 1);
+	if(st->flags & F_AC && st->str[i] =='0' && st->acrcy == 0)
+		return ;
 	while (st->str[i] && i < ft_strlen(st->str))
-	{
-		write(1, &st->str[i], 1);
-		i++;
-		*ch_num += 1;
-	}
+		write(1, &st->str[i++], 1);
+	*ch_num += i;
 }
 
 char		*chang_notation(int i, unsigned long long inp, int sst)

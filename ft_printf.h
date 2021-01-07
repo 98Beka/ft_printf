@@ -22,7 +22,7 @@
 # define F_AC	0b01000000
 # define F_ER	0b10000000
 # define NN     "(null)"
-# include "libft.h"
+# include "libft/libft.h"
 # include <stdarg.h>
 # include <unistd.h>
 
@@ -31,10 +31,11 @@ typedef struct		s_st
 	char			flags;
 	char			*arg;
 	char			*str;
-	long int		dig;
+	int				dig;
 	int				acrcy;
 	int				width;
 }					t_st;
+void				mn(int *ch_num, t_st *st);
 int					str_next(char **s);
 int					wrstr(t_st *st, int *ch_num);
 char				*chang_notation(int i, unsigned long long input, int sist);
@@ -52,5 +53,5 @@ int					get_accuracy(va_list *pa, t_st *st);
 void				get_width(va_list *pa, t_st *st);
 int					ft_printf(const char *str, ...);
 int					putchar_next(char ch, int *ch_num);
-int					set_int(int ch_num, int set_i, t_st *st);
+int					set_int(int ch_num,  int set_i, t_st *st);
 #endif

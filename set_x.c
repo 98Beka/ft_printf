@@ -19,26 +19,29 @@ void	touperstr(size_t i, char *s)
 			s[i] = ft_toupper(s[i]);
 }
 
+void		xdistrb_mn(int *ch_num, t_st *st)
+{
+	if (st->flags & F_MN)
+		wr(0, ch_num, st);
+	if(st->flags & F_AC && !st->acrcy)
+		zr_or_sp(ch_num, st->width, ft_strlen(st->str) - (*st->str == '0'), st->flags & F_ZR);	
+	else if (st->flags & F_AC)
+	{
+		if (st->acrcy < 0 ||((size_t)st->acrcy < ft_strlen(st->str) && st->acrcy >= 0))
+		st->acrcy = ft_strlen(st->str);
+		zr_or_sp(ch_num, st->width, st->acrcy, st->flags & F_ZR);
+	}
+	else
+		zr_or_sp(ch_num, st->width, ft_strlen(st->str), st->flags & F_ZR);
+	if (!(st->flags & F_MN))
+		wr(0, ch_num, st);
+}
 int		set_x(int ch_num, unsigned int input, t_st *st, int x)
 {
-	if (!st->acrcy && !input)
-	{
-		zr_or_sp(&ch_num, st->width, 0, 0);
-		return (ch_num);
-	}
 	st->str = chang_notation(0, input, 16);
 	if (x)
 		touperstr(-1, st->str);
-	if (st->acrcy >= 0 && (size_t)st->acrcy < ft_strlen(st->str))
-		st->acrcy = ft_strlen(st->str);
-	if (st->flags & F_MN)
-		wr(0, &ch_num, st);
-	if (st->acrcy >= 0)
-		zr_or_sp(&ch_num, st->width - st->acrcy, 0, 0);
-	else
-		zr_or_sp(&ch_num, st->width, ft_strlen(st->str), st->flags & F_ZR);
-	if (!(st->flags & F_MN))
-		wr(0, &ch_num, st);
+	xdistrb_mn(&ch_num, st);
 	free(st->str);
 	st->str = NULL;
 	return (ch_num);

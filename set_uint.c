@@ -55,8 +55,14 @@ void		udistrb_mn(int *ch_num, t_st *st)
 {
 	if (st->flags & F_MN)
 		wr(0, ch_num, st);
-	if (st->acrcy >= 0)
-		zr_or_sp(ch_num, st->width, st->acrcy, 0);
+	if(st->flags & F_AC && !st->acrcy)
+		zr_or_sp(ch_num, st->width, ft_strlen(st->str) - (*st->str == '0'), st->flags & F_ZR);	
+	else if (st->flags & F_AC)
+	{
+		if (st->acrcy < 0 ||((size_t)st->acrcy < ft_strlen(st->str) && st->acrcy >= 0))
+		st->acrcy = ft_strlen(st->str);
+		zr_or_sp(ch_num, st->width, st->acrcy, st->flags & F_ZR);
+	}
 	else
 		zr_or_sp(ch_num, st->width, ft_strlen(st->str), st->flags & F_ZR);
 	if (!(st->flags & F_MN))
@@ -66,23 +72,7 @@ void		udistrb_mn(int *ch_num, t_st *st)
 int			set_uint(int ch_num, unsigned int set_i, t_st *st)
 {
 	st->dig = set_i;
-	if (set_i < 0 && (st->acrcy >= 0 || st->flags & F_ZR))
-	{
-		if (st->flags & F_ZR && st->acrcy < 0)
-			write(1, "-", 1);
-		set_i *= -1;
-		st->flags = st->flags | F_ZR;
-		st->width--;
-		ch_num++;
-	}
-	if (!st->acrcy && !set_i)
-	{
-		zr_or_sp(&ch_num, st->width, 0, 0);
-		return (ch_num);
-	}
 	st->str = ft_utoa(set_i);
-	if (st->acrcy >= 0 && (size_t)st->acrcy < ft_strlen(st->str))
-		st->acrcy = ft_strlen(st->str);
 	udistrb_mn(&ch_num, st);
 	free(st->str);
 	st->str = NULL;

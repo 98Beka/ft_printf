@@ -10,8 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
-LIBFT = libft.a
+LIBFT = ./libft/libft.a
 NAME = libftprintf.a
+MAKEF = ./libft/Makefile
 SRCS =  \
 		ft_printf.c\
 		get_flags.c\
@@ -30,13 +31,13 @@ CC = gcc
 FLAGS = -Wall -Wextra -Werror
 OBJS = $(SRCS:.c=.o)
 
-$(NAME): $(OBJS)
+$(NAME):  $(OBJS)
+	make $(MAKEF)
 	cp $(LIBFT) $(NAME)
 	$(CC) -c $(FLAGS) $(SRCS)
 	ar -rcs $(NAME)  $(OBJS) 
 	
 all : $(NAME)
-
 
 a:
 	$(CC) -g  $(SRCS) $(LIBFT) -o a
@@ -47,7 +48,7 @@ q:
 
 
 clean :
-	rm -rf $(SURPL_O) $(OBJS)
+	rm -rf $(OBJS)
 
 fclean : clean
 	@rm -rf $(NAME) libftprintf.a

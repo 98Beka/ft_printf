@@ -26,14 +26,17 @@ int		set_str(int ch_num, char *str, t_st *st)
 	if (!str)
 		str = NN;
 	len = ft_strlen(str);
-	if ((size_t)st->acrcy > len || st->acrcy < 0)
+	if ((size_t)st->acrcy > len || st->acrcy < 0 || !(st->flags & F_AC))
 		st->acrcy = len;
+
 	if (st->flags & F_MN)
 		ch_num += print_str(0, st->acrcy, str);
+
 	zr_or_sp(&ch_num, st->width, st->acrcy, st->flags & F_ZR);
 	if (st->flags & F_AC)
 		zr_or_sp(&ch_num, st->acrcy, len, 1);
 	if (!(st->flags & F_MN))
+
 		ch_num += print_str(0, st->acrcy, str);
 	return (ch_num);
 }
