@@ -22,6 +22,14 @@ int		str_next(char **s)
 	return (0);
 }
 
+void	zero_acrcy(int *ch_num, t_st *st)
+{
+	int	l;
+
+	l = ft_strlen(st->str);
+	zr_or_sp(ch_num, st->width, l - (*st->str == '0'), st->flags & F_ZR);
+}
+
 int		set_char(int ch_num, char c, t_st *st)
 {
 	ch_num = 0;

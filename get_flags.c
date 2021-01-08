@@ -6,7 +6,7 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 18:07:02 by ehande            #+#    #+#             */
-/*   Updated: 2021/01/05 09:13:31 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/07 19:53:38 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int		get_accuracy(va_list *pa, t_st *st)
 {
 	st->flags = st->flags | F_AC;
 	st->arg += 1;
-
 	if (ft_isdigit(*st->arg))
 	{
 		st->acrcy = 0;
@@ -28,7 +27,7 @@ int		get_accuracy(va_list *pa, t_st *st)
 		st->acrcy = va_arg(*pa, int);
 		st->arg++;
 	}
-	if(st->acrcy >= 0)
+	if (st->acrcy >= 0)
 		st->flags = st->flags & ~F_ZR;
 	return (st->acrcy != 0 || *st->arg + 1 != 'p');
 }

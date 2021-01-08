@@ -6,7 +6,7 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 14:25:27 by ehande            #+#    #+#             */
-/*   Updated: 2021/01/05 09:31:04 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/07 19:52:58 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct		s_st
 	int				acrcy;
 	int				width;
 }					t_st;
+void				zero_acrcy(int *ch_num, t_st *st);
 void				mn(int *ch_num, t_st *st);
 int					str_next(char **s);
 int					wrstr(t_st *st, int *ch_num);
@@ -53,5 +54,5 @@ int					get_accuracy(va_list *pa, t_st *st);
 void				get_width(va_list *pa, t_st *st);
 int					ft_printf(const char *str, ...);
 int					putchar_next(char ch, int *ch_num);
-int					set_int(int ch_num,  int set_i, t_st *st);
+int					set_int(int ch_num, int set_i, t_st *st);
 #endif

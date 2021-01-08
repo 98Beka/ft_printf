@@ -6,7 +6,7 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/05 08:18:05 by ehande            #+#    #+#             */
-/*   Updated: 2021/01/05 08:36:41 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/07 19:54:30 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,16 @@
 int		wr_p(int i, t_st *st, int *ch_num)
 {
 	*ch_num += write(1, "0x", 2);
-	if (st->flags & F_ER)
+	if (!st->acrcy && st->flags & F_AC)
 	{
-		st->acrcy = -1;
 		st->width = 0;
 		return (0);
 	}
 	if (st->flags & F_AC)
 	{
 		zr_or_sp(ch_num, st->acrcy, ft_strlen(st->str), 1);
+		if (st->acrcy < 0)
+			st->acrcy = ft_strlen(st->str);
 		while (st->str[i] && i <= st->acrcy)
 			i += putchar_next(st->str[i], ch_num);
 	}
@@ -38,7 +39,7 @@ int		set_p(int ch_num, unsigned long long input, t_st *st)
 	size_t len;
 
 	len = 1;
-	if (st->flags & F_ER)
+	if (!st->acrcy && st->flags & F_AC)
 		len = 0;
 	if (!input)
 		st->str = chang_notation(0, input, 16);

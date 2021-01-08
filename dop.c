@@ -6,7 +6,7 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/05 08:16:27 by ehande            #+#    #+#             */
-/*   Updated: 2021/01/05 08:24:43 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/07 19:30:50 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ void		zr_or_sp(int *ch_num, int width, int str_len, int spzr)
 
 void		wr(size_t i, int *ch_num, t_st *st)
 {
-	if(*st->str == '-')
+	if (*st->str == '-')
 		mn(ch_num, st);
 	if (st->flags & F_AC)
 		zr_or_sp(ch_num, st->acrcy, ft_strlen(st->str), 1);
-	if(st->flags & F_AC && st->str[i] =='0' && st->acrcy == 0)
+	if (st->flags & F_AC && st->str[i] == '0' && st->acrcy == 0)
 		return ;
 	while (st->str[i] && i < ft_strlen(st->str))
 		write(1, &st->str[i++], 1);

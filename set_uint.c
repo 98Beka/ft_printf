@@ -6,7 +6,7 @@
 /*   By: ehande <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/05 08:18:26 by ehande            #+#    #+#             */
-/*   Updated: 2021/01/05 08:46:36 by ehande           ###   ########.fr       */
+/*   Updated: 2021/01/07 20:00:39 by ehande           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,13 @@ void		udistrb_mn(int *ch_num, t_st *st)
 {
 	if (st->flags & F_MN)
 		wr(0, ch_num, st);
-	if(st->flags & F_AC && !st->acrcy)
-		zr_or_sp(ch_num, st->width, ft_strlen(st->str) - (*st->str == '0'), st->flags & F_ZR);	
+	if (st->flags & F_AC && !st->acrcy)
+		zero_acrcy(ch_num, st);
 	else if (st->flags & F_AC)
 	{
-		if (st->acrcy < 0 ||((size_t)st->acrcy < ft_strlen(st->str) && st->acrcy >= 0))
-		st->acrcy = ft_strlen(st->str);
+		if (st->acrcy < 0 ||
+				((size_t)st->acrcy < ft_strlen(st->str) && st->acrcy >= 0))
+			st->acrcy = ft_strlen(st->str);
 		zr_or_sp(ch_num, st->width, st->acrcy, st->flags & F_ZR);
 	}
 	else
